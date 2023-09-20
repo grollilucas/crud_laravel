@@ -8,9 +8,6 @@ Route::get('/', function () {
     return view('login');
 });
 
-Route::get('/welcome', function () {
-    return view('welcome');
-});
 
 
 Route::post('/login', [LoginController::class, 'authenticate']);
@@ -25,3 +22,15 @@ Route::get('/livros/delete/{id}', [LivrosController::class, 'destroy'])->middlew
 Route::get('/livros/editar/{id}', [LivrosController::class, 'edit'])->middleware('auth.basic');
 Route::post('/livros/editar/', [LivrosController::class, 'update'])->middleware('auth.basic');
 
+
+Route::get('/dashboard', function () {
+    return view('welcome');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __dir__.'/auth.php';
